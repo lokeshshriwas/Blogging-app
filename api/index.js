@@ -3,11 +3,13 @@ import express from "express";
 import mongoose from "mongoose";
 import userRouter from "./routes/user.js";
 import authRouter from "./routes/auth.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config({ path: "../.env" });
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/user", userRouter);
