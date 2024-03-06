@@ -1,13 +1,17 @@
-import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
+import { Avatar, Button, Dropdown, Navbar, TextInput, theme } from "flowbite-react";
 import { Link, useLocation } from "react-router-dom";
 import { PiGitlabLogoSimpleLight } from "react-icons/pi";
 import { AiOutlineSearch } from "react-icons/ai";
+import { GoSun } from "react-icons/go";
 import { IoMoonSharp } from "react-icons/io5";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleTheme } from "../redux/theme/themeSlice";
 
 const Header = () => {
   const path = useLocation().pathname;
+  const dispatch = useDispatch()
   const { currentUser } = useSelector((state) => state.user);
+  const {theme} = useSelector(state=> state.theme)
   return (
     <Navbar className="border-b-2">
       <Link
@@ -29,8 +33,12 @@ const Header = () => {
         <AiOutlineSearch className="text-lg" />
       </Button>
       <div className="flex gap-2 md:order-2">
-        <Button className="w-10 h-10 hidden sm:inline-flex" color="gray" pill>
-          <IoMoonSharp />
+        <Button className="w-10 h-10 hidden sm:inline-flex" color="gray" pill onClick={()=> dispatch(toggleTheme())}>
+
+          {
+            theme === "light" ?  <IoMoonSharp className="text-[#212121] text-xl"/> : <GoSun className="text-white text-xl"/>
+          }
+         
         </Button>
 
         {currentUser ? (
