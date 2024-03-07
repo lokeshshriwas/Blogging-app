@@ -17,12 +17,13 @@ import {
   deleteUserFailure,
   deleteUserStart,
   deleteUserSuccess,
-  signoutSuccess
+  signoutSuccess,
 } from "../redux/user/userSlice";
 import { BsExclamationCircle } from "react-icons/bs";
+import { Link } from "react-router-dom";
 
 const DashProfile = () => {
-  const { currentUser, error } = useSelector((state) => state.user);
+  const { currentUser, error, loading } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileProgress, setImageFileProgress] = useState(null);
@@ -154,32 +155,32 @@ const DashProfile = () => {
       const res = await fetch(`/api/user/delete/${currentUser._id}`, {
         method: "DELETE",
       });
-      const data= await res.json()
-      if(!res.ok){
-        dispatch(deleteUserFailure(data.message))
-      } else{
-        dispatch(deleteUserSuccess())
+      const data = await res.json();
+      if (!res.ok) {
+        dispatch(deleteUserFailure(data.message));
+      } else {
+        dispatch(deleteUserSuccess());
       }
     } catch (error) {
       dispatch(deleteUserFailure(error.message));
     }
   };
 
-  const handleSignout = async () =>{
+  const handleSignout = async () => {
     try {
-      const res = await fetch('/api/user/signout', {
-        method: "POST"
-      })
-      const data = await res.json()
-      if(!res.ok){
-        console.group(data.message)
-      }else{
-        dispatch(signoutSuccess())
+      const res = await fetch("/api/user/signout", {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.group(data.message);
+      } else {
+        dispatch(signoutSuccess());
       }
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
     }
-  }
+  };
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
       <h1 className="my-7 text-center font-semibold text-3xl">Profile</h1>
@@ -245,9 +246,25 @@ const DashProfile = () => {
           placeholder="password"
           onChange={handleChange}
         />
-        <Button type="submit" gradientDuoTone="greenToBlue" outline>
-          Update
+        <Button
+          type="submit"
+          gradientDuoTone="greenToBlue"
+          outline
+          disabled={loading || imageFileUploading}
+        >
+          {loading ? "loading..." : "Update"}
         </Button>
+        {currentUser.isAdmin && (
+          <Link to={"/create-post"}>
+            <Button
+              type="button"
+              gradientDuoTone={"greenToBlue"}
+              className="w-full"
+            >
+              Create a post
+            </Button>
+          </Link>
+        )}
       </form>
       <div className="text-red-500 flex justify-between mt-5 items-center">
         <span
@@ -256,7 +273,11 @@ const DashProfile = () => {
         >
           Delete Account
         </span>
-        <Button className="cursor-pointer" color="failure" onClick={handleSignout}>
+        <Button
+          className="cursor-pointer"
+          color="failure"
+          onClick={handleSignout}
+        >
           Sign Out
         </Button>
       </div>
