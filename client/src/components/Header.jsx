@@ -1,17 +1,43 @@
-import { Avatar, Button, Dropdown, Navbar, TextInput, theme } from "flowbite-react";
-import { Link, useLocation } from "react-router-dom";
+import {
+  Avatar,
+  Button,
+  Dropdown,
+  Navbar,
+  TextInput,
+  theme,
+} from "flowbite-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { PiGitlabLogoSimpleLight } from "react-icons/pi";
 import { AiOutlineSearch } from "react-icons/ai";
 import { GoSun } from "react-icons/go";
 import { IoMoonSharp } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTheme } from "../redux/theme/themeSlice";
+import { signoutSuccess } from "../redux/user/userSlice";
 
 const Header = () => {
   const path = useLocation().pathname;
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
-  const {theme} = useSelector(state=> state.theme)
+  const { theme } = useSelector((state) => state.theme);
+  const navigate = useNavigate()
+
+  const handleSignout = async () =>{
+    try {
+      const res = await fetch('/api/user/signout', {
+        method: "POST"
+      })
+      const data = await res.json()
+      if(!res.ok){
+        console.group(data.message)
+      }else{
+        dispatch(signoutSuccess())
+        navigate("/sign-in")
+      }
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
   return (
     <Navbar className="border-b-2">
       <Link
@@ -33,12 +59,17 @@ const Header = () => {
         <AiOutlineSearch className="text-lg" />
       </Button>
       <div className="flex gap-2 md:order-2">
-        <Button className="w-10 h-10 hidden sm:inline-flex" color="gray" pill onClick={()=> dispatch(toggleTheme())}>
-
-          {
-            theme === "light" ?  <IoMoonSharp className="text-[#212121] text-xl"/> : <GoSun className="text-white text-xl"/>
-          }
-         
+        <Button
+          className="w-10 h-10 hidden sm:inline-flex"
+          color="gray"
+          pill
+          onClick={() => dispatch(toggleTheme())}
+        >
+          {theme === "light" ? (
+            <IoMoonSharp className="text-[#212121] text-xl" />
+          ) : (
+            <GoSun className="text-white text-xl" />
+          )}
         </Button>
 
         {currentUser ? (
@@ -51,13 +82,15 @@ const Header = () => {
           >
             <Dropdown.Header>
               <span className="block text-sm">@{currentUser.username}</span>
-              <span className="block text-base truncate font-bold ">@{currentUser.email}</span>
+              <span className="block text-base truncate font-bold ">
+                @{currentUser.email}
+              </span>
             </Dropdown.Header>
-              <Link to={"/dashboard?tab=profile"}>
-                <Dropdown.Item>Profile</Dropdown.Item>
-              </Link>
-              <Dropdown.Divider/>
-              <Dropdown.Item>Sign Out</Dropdown.Item>
+            <Link to={"/dashboard?tab=profile"}>
+              <Dropdown.Item>Profile</Dropdown.Item>
+            </Link>
+            <Dropdown.Divider />
+            <Dropdown.Item onClick={handleSignout}>Sign Out</Dropdown.Item>
           </Dropdown>
         ) : (
           <Link to={"/sign-in"}>

@@ -17,6 +17,7 @@ import {
   deleteUserFailure,
   deleteUserStart,
   deleteUserSuccess,
+  signoutSuccess
 } from "../redux/user/userSlice";
 import { BsExclamationCircle } from "react-icons/bs";
 
@@ -163,6 +164,22 @@ const DashProfile = () => {
       dispatch(deleteUserFailure(error.message));
     }
   };
+
+  const handleSignout = async () =>{
+    try {
+      const res = await fetch('/api/user/signout', {
+        method: "POST"
+      })
+      const data = await res.json()
+      if(!res.ok){
+        console.group(data.message)
+      }else{
+        dispatch(signoutSuccess())
+      }
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
       <h1 className="my-7 text-center font-semibold text-3xl">Profile</h1>
@@ -239,7 +256,7 @@ const DashProfile = () => {
         >
           Delete Account
         </span>
-        <Button className="cursor-pointer" color="failure">
+        <Button className="cursor-pointer" color="failure" onClick={handleSignout}>
           Sign Out
         </Button>
       </div>
