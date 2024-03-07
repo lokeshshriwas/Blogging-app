@@ -3,6 +3,7 @@ import express from "express";
 import mongoose from "mongoose";
 import userRouter from "./routes/user.js";
 import authRouter from "./routes/auth.js";
+import postRouter from "./routes/post.js";
 import cookieParser from "cookie-parser";
 
 dotenv.config({ path: "../.env" });
@@ -14,6 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/post", postRouter);
 
 // middleware
 
