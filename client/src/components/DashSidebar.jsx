@@ -4,12 +4,14 @@ import { FaUserAlt } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
 import { Link, useLocation } from "react-router-dom";
 import { signoutSuccess } from "../redux/user/userSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { HiDocumentText } from "react-icons/hi2";
 
 const DashSidebar = () => {
   const location = useLocation();
   const [tab, setTab] = useState("");
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -19,41 +21,57 @@ const DashSidebar = () => {
     }
   }, [location]);
 
-  const handleSignout = async () =>{
+  const handleSignout = async () => {
     try {
-      const res = await fetch('/api/user/signout', {
-        method: "POST"
-      })
-      const data = await res.json()
-      if(!res.ok){
-        console.group(data.message)
-      }else{
-        dispatch(signoutSuccess())
+      const res = await fetch("/api/user/signout", {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.group(data.message);
+      } else {
+        dispatch(signoutSuccess());
       }
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
     }
-  }
+  };
   return (
-    <Sidebar className="w-full" >
-        <Sidebar.Items>
-          <Sidebar.ItemGroup>
-            <Link to={`/dashboard?tab=profile`}>
+    <Sidebar className="w-full">
+      <Sidebar.Items>
+        <Sidebar.ItemGroup className="flex flex-col gap-1">
+          <Link to={`/dashboard?tab=profile`}>
+            <Sidebar.Item
+              active={tab === "profile"}
+              icon={FaUserAlt}
+              label={currentUser.isAdmin ? "Admin" : "User"}
+              labelColor={"dark"}
+              as="div"
+            >
+              Profile
+            </Sidebar.Item>
+          </Link>
+          {currentUser.isAdmin && (
+            <Link to={`/dashboard?tab=posts`}>
               <Sidebar.Item
-                active={tab === "profile"}
-                icon={FaUserAlt}
-                label={"User"}
+                active={tab === "posts"}
+                icon={HiDocumentText}
                 labelColor={"dark"}
                 as="div"
               >
-                Profile
+                Posts
               </Sidebar.Item>
             </Link>
-            <Sidebar.Item icon={IoLogOut} className={"cursor-pointer"} onClick={handleSignout}>
-              Sign Out
-            </Sidebar.Item>
-          </Sidebar.ItemGroup>
-        </Sidebar.Items>
+          )}
+          <Sidebar.Item
+            icon={IoLogOut}
+            className={"cursor-pointer"}
+            onClick={handleSignout}
+          >
+            Sign Out
+          </Sidebar.Item>
+        </Sidebar.ItemGroup>
+      </Sidebar.Items>
     </Sidebar>
   );
 };
