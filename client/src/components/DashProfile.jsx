@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Alert, Button, TextInput, Toast } from "flowbite-react";
+import { Alert, Button, Modal, TextInput } from "flowbite-react";
 import {
   getStorage,
   ref,
@@ -14,18 +14,23 @@ import {
   updateFailure,
   updateStart,
   updateSuccess,
+  deleteUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
 } from "../redux/user/userSlice";
+import { BsExclamationCircle } from "react-icons/bs";
 
 const DashProfile = () => {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, error } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileProgress, setImageFileProgress] = useState(null);
   const [imageFileUploadError, setImageFileUploadError] = useState(null);
   const [updateUserSuccess, setUpdateUserSuccess] = useState(null);
-  const [updateUserError, setUpdateUserError] = useState(null)
+  const [updateUserError, setUpdateUserError] = useState(null);
   const [formData, setFormData] = useState({});
   const [imageFileUploading, setImageFileUploading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch();
 
   const filePickerRef = useRef();
@@ -107,14 +112,14 @@ const DashProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setUpdateUserError(null)
-    setUpdateUserSuccess(null)
+    setUpdateUserError(null);
+    setUpdateUserSuccess(null);
     if (Object.keys(formData).length === 0) {
-      setUpdateUserError("No changes made")
+      setUpdateUserError("No changes made");
       return;
     }
     if (imageFileUploading) {
-      setUpdateUserError("Image is uploading")
+      setUpdateUserError("Image is uploading");
       return;
     }
     try {
@@ -129,7 +134,7 @@ const DashProfile = () => {
       const data = await res.json();
       if (!res.ok) {
         dispatch(updateFailure(data.message));
-        setUpdateUserError(data.message)
+        setUpdateUserError(data.message);
       } else {
         dispatch(updateSuccess(data));
         setUpdateUserSuccess("User's profile updated successfully");
@@ -137,10 +142,27 @@ const DashProfile = () => {
       }
     } catch (error) {
       dispatch(updateFailure(error.message));
-      setUpdateUserError(data.message)
+      setUpdateUserError(data.message);
     }
   };
 
+  const handleDeleteUser = async () => {
+    setShowModal(false);
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      const data= await res.json()
+      if(!res.ok){
+        dispatch(deleteUserFailure(data.message))
+      } else{
+        dispatch(deleteUserSuccess())
+      }
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
+  };
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
       <h1 className="my-7 text-center font-semibold text-3xl">Profile</h1>
@@ -211,7 +233,12 @@ const DashProfile = () => {
         </Button>
       </form>
       <div className="text-red-500 flex justify-between mt-5 items-center">
-        <span className="cursor-pointer text-md">Delete Account</span>
+        <span
+          className="cursor-pointer text-md"
+          onClick={() => setShowModal(true)}
+        >
+          Delete Account
+        </span>
         <Button className="cursor-pointer" color="failure">
           Sign Out
         </Button>
@@ -226,6 +253,36 @@ const DashProfile = () => {
           {updateUserError}
         </Alert>
       )}
+      {error && (
+        <Alert color={"failure"} className="mt-4">
+          {error}
+        </Alert>
+      )}
+
+      <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        popup
+        size="md"
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center ">
+            <BsExclamationCircle className="h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto" />
+            <h3 className="mb-5 text-lg text-gray500 dark:text-gray-400">
+              Are you sure you want to delete the account
+            </h3>
+            <div className="flex justify-center gap-4">
+              <Button color="failure" onClick={handleDeleteUser}>
+                Yes, I'm Sure
+              </Button>
+              <Button color="gray" onClick={() => setShowModal(false)}>
+                No, cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
