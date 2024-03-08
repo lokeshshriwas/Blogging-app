@@ -12,42 +12,41 @@ import { app } from "../firebase.js";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useNavigate, useParams } from "react-router-dom";
-import {useSelector} from "react-redux"
-
+import { useSelector } from "react-redux";
 
 const UpdatePost = () => {
   const [imageFile, setImageFile] = useState(null);
   const [imageUploadProgress, setImageUploadProgress] = useState(null);
   const [imageUploadError, setImageUploadError] = useState(null);
   const [formData, setFormData] = useState({});
-  const [publishError, setPublishError] = useState(null)
-  const {postId} = useParams()
-  const {currentUser} = useSelector(state=> state.user)
-  const navigate = useNavigate()
+  const [publishError, setPublishError] = useState(null);
+  const { postId } = useParams();
+  const { currentUser } = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
-  const fetchPost = async ()=>{
+  const fetchPost = async () => {
     try {
-        const res = await fetch(`/api/post/getposts?postId=${postId}`)
-        const data = await res.json()
-        if(!res.ok){
-            console.log(data.message)
-            setPublishError(data.message)
-            return;
-        } 
-        if(res.ok){
-            setPublishError(null)
-            setFormData(data.posts[0])
-        }
+      const res = await fetch(`/api/post/getposts?postId=${postId}`);
+      const data = await res.json();
+      if (!res.ok) {
+        console.log(data.message);
+        setPublishError(data.message);
+        return;
+      }
+      if (res.ok) {
+        setPublishError(null);
+        setFormData(data.posts[0]);
+      }
     } catch (error) {
-        console.log(error.message)
+      console.log(error.message);
     }
-  }
+  };
 
-  useEffect(()=>{
-    if(postId){
-        fetchPost()
+  useEffect(() => {
+    if (postId) {
+      fetchPost();
     }
-  }, [postId])
+  }, [postId]);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -102,28 +101,31 @@ const UpdatePost = () => {
     }
   };
 
-  const handleSubmit = async (e)=>{
-    e.preventDefault()
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const res = await fetch(`/api/post/updatepost/${formData._id}/${currentUser._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type" : "application/json"
-        },
-        body: JSON.stringify(formData)
-      })
-      const data = await res.json()
-      if(!res.ok){
-        setPublishError(data.message)
+      const res = await fetch(
+        `/api/post/updatepost/${formData._id}/${currentUser._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+      const data = await res.json();
+      if (!res.ok) {
+        setPublishError(data.message);
         return;
       } else {
-        setPublishError(null)
-        navigate(`/post/${data.slug}`)
+        setPublishError(null);
+        navigate(`/post/${data.slug}`);
       }
     } catch (error) {
-      setPublishError('Something went wrong')
+      setPublishError("Something went wrong");
     }
-  }
+  };
 
   return (
     <div className="p-3 max-w-3xl mx-auto min-h-screen ">
@@ -212,9 +214,7 @@ const UpdatePost = () => {
         <Button type="submit" gradientDuoTone={"greenToBlue"}>
           Update post
         </Button>
-        {
-          publishError && <Alert color={"failure"} >{publishError}</Alert>
-        }
+        {publishError && <Alert color={"failure"}>{publishError}</Alert>}
       </form>
     </div>
   );
