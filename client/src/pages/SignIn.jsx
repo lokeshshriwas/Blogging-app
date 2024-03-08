@@ -1,16 +1,18 @@
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { signInSuccess, signInStart, signInFailure} from "../redux/user/userSlice";
+import {
+  signInSuccess,
+  signInStart,
+  signInFailure,
+} from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { BsDisplay } from "react-icons/bs";
 import OAuth from "../components/OAuth";
-
 
 const SignIn = () => {
   const [formData, setFormData] = useState({});
-  const {loading, error: errorMessage} = useSelector(state=> state.user)
-  const dispatch = useDispatch()
+  const { loading, error: errorMessage } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
@@ -21,10 +23,10 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
-      return dispatch(signInFailure("Please fill all the fields"))
+      return dispatch(signInFailure("Please fill all the fields"));
     }
     try {
-      dispatch(signInStart())
+      dispatch(signInStart());
       const res = await fetch(`/api/auth/signin`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -32,15 +34,15 @@ const SignIn = () => {
       });
       const data = await res.json();
       if (data.success === false) {
-        dispatch(signInFailure(data.message))
+        dispatch(signInFailure(data.message));
       }
 
-      if(res.ok){
-        dispatch(signInSuccess(data))
+      if (res.ok) {
+        dispatch(signInSuccess(data));
         navigate("/");
       }
     } catch (error) {
-      dispatch(signInFailure(error.message))
+      dispatch(signInFailure(error.message));
     }
   };
 
@@ -98,7 +100,7 @@ const SignIn = () => {
                 "Sign up"
               )}
             </Button>
-            <OAuth/>
+            <OAuth />
           </form>
           <div className="flex gap-2 text-sm mt-5 justify-center">
             <span>Don't have an account?</span>
