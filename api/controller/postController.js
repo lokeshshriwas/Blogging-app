@@ -65,7 +65,7 @@ export const getposts = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
-    console.log("error");
+    console.log("error getting posts");
   }
 };
 

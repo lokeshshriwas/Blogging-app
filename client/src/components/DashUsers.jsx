@@ -4,8 +4,7 @@ import { Button, Modal, Table } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { BsExclamationCircle } from "react-icons/bs";
 import { useSelector } from "react-redux";
-import { ImCross } from "react-icons/im";
-import { TiTick } from "react-icons/ti";
+import {FaCheck, FaTimes} from "react-icons/fa"
 
 const DashUsers = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -100,9 +99,9 @@ const DashUsers = () => {
                   <Table.Cell>{user.email}</Table.Cell>
                   <Table.Cell>
                     {user.isAdmin ? (
-                      <TiTick className="text-green-500 text-2xl" />
+                      <FaCheck className="text-green-500 " />
                     ) : (
-                      <ImCross className="text-red-500" />
+                      <FaTimes className="text-red-500" />
                     )}
                   </Table.Cell>
 
