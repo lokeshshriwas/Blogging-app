@@ -8,6 +8,7 @@ import { HiDocumentText } from "react-icons/hi2";
 import { HiMiniUserGroup } from "react-icons/hi2";
 import { HiUser } from "react-icons/hi2";
 import { FaCommentDots } from "react-icons/fa";
+import { FaChartPie } from "react-icons/fa";
 
 const DashSidebar = () => {
   const location = useLocation();
@@ -42,6 +43,18 @@ const DashSidebar = () => {
     <Sidebar className="w-full">
       <Sidebar.Items>
         <Sidebar.ItemGroup className="flex flex-col gap-1">
+        {currentUser.isAdmin && (
+            <Link to={`/dashboard?tab=dashboard`}>
+              <Sidebar.Item
+                active={tab === "dashboard"}
+                icon={FaChartPie}
+                labelColor={"dark"}
+                as="div"
+              >
+                Dashboard
+              </Sidebar.Item>
+            </Link>
+          )}
           <Link to={`/dashboard?tab=profile`}>
             <Sidebar.Item
               active={tab === "profile"}

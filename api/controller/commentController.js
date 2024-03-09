@@ -1,6 +1,5 @@
 import { errorHandler } from "../utils/error.js";
 import Comment from "../models/commentModel.js";
-import { parse } from "dotenv";
 
 export const createComment = async (req, res, next) => {
   try {
