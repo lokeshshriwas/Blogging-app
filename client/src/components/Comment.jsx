@@ -4,7 +4,7 @@ import { FaThumbsUp } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Button, Textarea } from "flowbite-react";
 
-const Comment = ({ comment, onLike, onEdit }) => {
+const Comment = ({ comment, onLike, onEdit, onDelete }) => {
   const [user, setUser] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(comment.content);
@@ -31,6 +31,7 @@ const Comment = ({ comment, onLike, onEdit }) => {
     setEditedContent(comment.content);
   };
 
+
   const handleSave = async () => {
     try {
       const res = await fetch(`/api/comment/editComment/${comment._id}`, {
@@ -38,12 +39,12 @@ const Comment = ({ comment, onLike, onEdit }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: editedContent }),
       });
-      if(res.ok){
-        setIsEditing(false)
-        onEdit(comment, editedContent)
+      if (res.ok) {
+        setIsEditing(false);
+        onEdit(comment, editedContent);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
   return (
@@ -116,13 +117,22 @@ const Comment = ({ comment, onLike, onEdit }) => {
               </p>
               {currentUser &&
                 (currentUser._id === comment.userId || currentUser.isAdmin) && (
-                  <button
-                    type="button"
-                    className="text-gray-400 hover:text-blue-500"
-                    onClick={handleEdit}
-                  >
-                    Edit
-                  </button>
+                  <>
+                    <button
+                      type="button"
+                      className="text-gray-400 hover:text-blue-500"
+                      onClick={handleEdit}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      className="text-gray-400 hover:text-blue-500"
+                      onClick={()=> onDelete(comment._id)}
+                    >
+                      Delete
+                    </button>
+                  </>
                 )}
             </div>
           </>

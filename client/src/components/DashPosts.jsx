@@ -1,6 +1,6 @@
 import { Button, Modal, Table } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { BsEmojiSmileUpsideDown, BsExclamationCircle } from "react-icons/bs";
+import { BsExclamationCircle } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
