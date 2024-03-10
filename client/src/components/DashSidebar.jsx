@@ -46,7 +46,7 @@ const DashSidebar = () => {
         {currentUser.isAdmin && (
             <Link to={`/dashboard?tab=dashboard`}>
               <Sidebar.Item
-                active={tab === "dashboard"}
+                active={tab === "dashboard" || !tab}
                 icon={FaChartPie}
                 labelColor={"dark"}
                 as="div"

@@ -14,30 +14,53 @@ import { IoMoonSharp } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTheme } from "../redux/theme/themeSlice";
 import { signoutSuccess } from "../redux/user/userSlice";
+import { useEffect, useState } from "react";
 
 const Header = () => {
   const path = useLocation().pathname;
+  const location = useLocation();
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
   const { theme } = useSelector((state) => state.theme);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const handleSignout = async () =>{
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromUrl = urlParams.get("search");
+    if (searchTermFromUrl) {
+      setSearchTerm(searchTermFromUrl);
+    }
+  }, [location.search]);
+
+  const handleSignout = async () => {
     try {
-      const res = await fetch('/api/user/signout', {
-        method: "POST"
-      })
-      const data = await res.json()
-      if(!res.ok){
-        console.group(data.message)
-      }else{
-        dispatch(signoutSuccess())
-        navigate("/sign-in")
+      const res = await fetch("/api/user/signout", {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.group(data.message);
+      } else {
+        dispatch(signoutSuccess());
+        navigate("/sign-in");
       }
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
     }
-  }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set("searchTerm", searchTerm);
+
+    const searchQuery = urlParams.toString();
+    console.log(searchQuery)
+    navigate(`/search?${searchQuery}`)
+  };
+
+
   return (
     <Navbar className="border-b-2">
       <Link
@@ -47,12 +70,14 @@ const Header = () => {
         <PiGitlabLogoSimpleLight className="inline-flex whitespace-nowrap text-white bg-gradient-to-r from-blue-400 via-green-400 to bg-yellow-100  text-2xl sm:text-4xl rounded-lg font-bold" />
         &nbsp; Blog
       </Link>
-      <form>
+      <form onSubmit={handleSubmit}>
         <TextInput
           type="text"
+          value={searchTerm}
           placeholder="search..."
           rightIcon={AiOutlineSearch}
           className="hidden lg:inline"
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </form>
       <Button className="w-12 h-10 lg:hidden " color="gray">
@@ -60,7 +85,7 @@ const Header = () => {
       </Button>
       <div className="flex gap-2 md:order-2">
         <Button
-          className="w-10 h-10 hidden sm:inline-flex"
+          className="w-10 h-10  sm:inline-flex"
           color="gray"
           pill
           onClick={() => dispatch(toggleTheme())}
@@ -77,7 +102,12 @@ const Header = () => {
             arrowIcon={false}
             inline
             label={
-              <Avatar alt="user" img={currentUser.profilePicture} rounded />
+              <Avatar
+                alt="user"
+                img={currentUser.profilePicture}
+                rounded
+                className=""
+              />
             }
           >
             <Dropdown.Header>
