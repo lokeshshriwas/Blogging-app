@@ -6,18 +6,26 @@ import authRouter from "./routes/auth.js";
 import postRouter from "./routes/post.js";
 import commentRoute from "./routes/comment.js";
 import cookieParser from "cookie-parser";
+import path from "path";
 
 dotenv.config({ path: "../.env" });
 
 const app = express();
 app.use(express.json());
-app.use(cookieParser())
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+
+const __dirname = path.resolve();
 
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/post", postRouter);
 app.use("/api/comment", commentRoute);
+
+app.use(express.static(path.join(__dirname, "/client/dist")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+});
 
 // middleware
 
