@@ -9,13 +9,13 @@ import cookieParser from "cookie-parser";
 import path from "path";
 
 dotenv.config({ path: "../.env" });
+const __dirname = path.resolve();
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
-const __dirname = path.resolve();
 
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
