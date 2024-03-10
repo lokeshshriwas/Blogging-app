@@ -29,13 +29,14 @@ const UpdatePost = () => {
       const res = await fetch(`/api/post/getposts?postId=${postId}`);
       const data = await res.json();
       if (!res.ok) {
-        console.log(data.message);
+        console.log("error in backend" + data.message);
         setPublishError(data.message);
         return;
       }
       if (res.ok) {
         setPublishError(null);
         setFormData(data.posts[0]);
+        console.log(formData)
       }
     } catch (error) {
       console.log(error.message);
@@ -115,6 +116,7 @@ const UpdatePost = () => {
         }
       );
       const data = await res.json();
+      console.log(data)
       if (!res.ok) {
         setPublishError(data.message);
         return;
@@ -140,12 +142,12 @@ const UpdatePost = () => {
             className="flex-1"
             value={formData.title}
             onChange={(e) =>
-              setFormData({ ...formData, title: e.target.value })
+              setFormData((prev)=>({ ...prev, title: e.target.value }))
             }
           />
           <Select
             onChange={(e) =>
-              setFormData({ ...formData, category: e.target.value })
+              setFormData((prev)=> ({ ...prev, category: e.target.value }))
             }
             value={formData.category}
           >
@@ -195,7 +197,7 @@ const UpdatePost = () => {
           </Button>
         </div>
         {imageUploadError && (
-          <Alert color={"failure"}>{imageUploadError}</Alert>
+          <Alert color={"failure"}>{`${imageUploadError}`}</Alert>
         )}
         {formData.image && (
           <img
@@ -209,12 +211,12 @@ const UpdatePost = () => {
           required
           className="h-72 mb-12"
           value={formData.content}
-          onChange={(value) => setFormData({ ...formData, content: value })}
+          onChange={(value) => setFormData((prev)=> ({ ...prev, content: value }))}
         />
         <Button type="submit" gradientDuoTone={"greenToBlue"}>
           Update post
         </Button>
-        {publishError && <Alert color={"failure"}>{publishError}</Alert>}
+        {publishError && <Alert color={"failure"}>{`Updating error:  ${publishError}`}</Alert>}
       </form>
     </div>
   );

@@ -64,7 +64,7 @@ const Search = () => {
     }
     if (e.target.id === "category") {
       const category = e.target.value || "uncategorized";
-      setSidebarData({ ...sidebarData, category: category });
+      setSidebarData({ ...sidebarData, category });
     }
   };
 
@@ -75,30 +75,30 @@ const Search = () => {
     urlParams.set("sort", sidebarData.sort);
     urlParams.set("category", sidebarData.category);
     const searchQuery = urlParams.toString();
-    navigate(`/search/${searchQuery}`);
+    navigate(`/search?${searchQuery}`);
   };
 
   const handleShowMore = async () => {
     const numberOfPosts = posts.length;
     const startIndex = numberOfPosts;
-    const urlParams = new URLSearchParams(location.search)
-    urlParams.set("startIndex", startIndex)
-    const searchQuery = urlParams.toString()
-    const res = await fetch(`/api/post/getposts?${searchQuery}`)
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set("startIndex", startIndex);
+    const searchQuery = urlParams.toString();
+    const res = await fetch(`/api/post/getposts?${searchQuery}`);
 
-    if(!res.ok){
-        return
+    if (!res.ok) {
+      return;
     }
-    if(res.ok){
-        const data = await res.json()
-        setPosts([...posts, ...data.posts])
-        if(data.posts.length === 9){
-            setShowMore(true)
-        }else{
-            setShowMore(false)
-        }
+    if (res.ok) {
+      const data = await res.json();
+      setPosts([...posts, ...data.posts]);
+      if (data.posts.length === 9) {
+        setShowMore(true);
+      } else {
+        setShowMore(false);
+      }
     }
-  }
+  };
 
   return (
     <div className="flex flex-col md:flex-row">
@@ -160,22 +160,27 @@ const Search = () => {
           Posts results
         </h1>
         <div className="min-h-screen w-full flex justify-center items-start p-2">
+          {!loading && posts.length === 0 && (
+            <div className="w-full h-screen flex flex-col items-center mt-8">
+              <SiAmazondocumentdb className="text-5xl text-gray-500" />
+              <p className="text-xl text-gray-500 text-center w-full mt-4">
+                No posts found
+              </p>
+            </div>
+          )}
+          {loading && <p>Loading...</p>}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto">
-            {!loading && posts.length === 0 && (
-              <div className="w-full h-screen flex flex-col items-center mt-8">
-                <SiAmazondocumentdb className="text-5xl text-gray-500" />
-                <p className="text-xl text-gray-500 text-center w-full mt-4">
-                  No posts found
-                </p>
-              </div>
-            )}
-            {loading && <p>Loading...</p>}
             {!loading &&
               posts &&
               posts.map((post) => <PostCard key={post._id} post={post} />)}
-              {
-                showMore && <button className="text-teal-500 text-lg hover:underline p-7 w-full" onClick={handleShowMore}>Show More</button>
-              }
+            {showMore && (
+              <button
+                className="text-teal-500 text-lg hover:underline p-7 w-full"
+                onClick={handleShowMore}
+              >
+                Show More
+              </button>
+            )}
           </div>
         </div>
       </div>

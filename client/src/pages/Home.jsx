@@ -42,8 +42,8 @@ const Home = () => {
     {
       posts && posts.length > 0 && (
         <div className="text-2xl font-semibold text-center flex flex-col items-center">
-          <h2>Recent Posts</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+          <h2 className="pb-6">Recent Posts</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-5">
               {posts.map((post)=> (
                 <PostCard key={post._id} post={post} />
               ))}

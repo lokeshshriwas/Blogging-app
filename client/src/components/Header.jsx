@@ -62,10 +62,10 @@ const Header = () => {
 
 
   return (
-    <Navbar className="border-b-2">
+    <Navbar className="border-b border-black">
       <Link
         to="/"
-        className="self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white"
+        className="self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white hidden min-[350px]:inline-flex"
       >
         <PiGitlabLogoSimpleLight className="inline-flex whitespace-nowrap text-white bg-gradient-to-r from-blue-400 via-green-400 to bg-yellow-100  text-2xl sm:text-4xl rounded-lg font-bold" />
         &nbsp; Blog
@@ -76,24 +76,22 @@ const Header = () => {
           value={searchTerm}
           placeholder="search..."
           rightIcon={AiOutlineSearch}
-          className="hidden lg:inline"
+          className="w-52 sm:w-64 lg:w-96 max-[470px]:w-32 border border-white rounded-lg"
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </form>
-      <Button className="w-12 h-10 lg:hidden " color="gray">
-        <AiOutlineSearch className="text-lg" />
-      </Button>
-      <div className="flex gap-2 md:order-2">
+    
+      <div className="flex gap-2 md:order-2 items-center">
         <Button
-          className="w-10 h-10  sm:inline-flex"
+          className="w-6 h-6 sm:w-10 sm:h-10  sm:inline-flex"
           color="gray"
           pill
           onClick={() => dispatch(toggleTheme())}
         >
           {theme === "light" ? (
-            <IoMoonSharp className="text-[#212121] text-xl" />
+            <IoMoonSharp className="text-[#212121] text-sm sm:text-xl" />
           ) : (
-            <GoSun className="text-white text-xl" />
+            <GoSun className="text-white text-sm sm:text-xl" />
           )}
         </Button>
 
@@ -106,7 +104,7 @@ const Header = () => {
                 alt="user"
                 img={currentUser.profilePicture}
                 rounded
-                className=""
+                className="h-10 w-10"
               />
             }
           >
@@ -124,7 +122,8 @@ const Header = () => {
           </Dropdown>
         ) : (
           <Link to={"/sign-in"}>
-            <Button gradientDuoTone={"greenToBlue"} outline pill>
+            <Button gradientDuoTone={"greenToBlue"} outline pill size={"sm"} >
+         
               Sign In
             </Button>
           </Link>

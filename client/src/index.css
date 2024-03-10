@@ -44,3 +44,13 @@ body{
 .dark .post-content a{
     color: rgb(110, 189, 246);
 }
+
+
+:is(.dark .dark\:bg-gray-800) {
+    --tw-bg-opacity: 1;
+    background-color: #171717 !important;
+}
+:is(.dark .dark\:bg-gray-700) {
+    --tw-bg-opacity: 1;
+    background-color: #171717 !important;
+}

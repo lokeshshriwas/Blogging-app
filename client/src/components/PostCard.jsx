@@ -30,7 +30,7 @@ const PostCard = ({ post }) => {
         <img
           src={post.image}
           alt={post.title}
-          className="rounded-3xl h-[150px] group-hover:h-[160px] transition-all duration-300 z-20 mx-auto"
+          className="rounded-3xl h-[150px] group-hover:h-[160px] transition-all duration-300 z-20 mx-auto object-cover"
         />
       </Link>
       <div className="py-3 w-full flex justify-between">
@@ -38,7 +38,7 @@ const PostCard = ({ post }) => {
           {post.category}
         </Badge>
         <div className="flex items-center gap-4 px-2">
-          <CiHeart className="text-lg" />
+          <CiHeart className="text-2xl" />
           <FaRegBookmark />
         </div>
       </div>
