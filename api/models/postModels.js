@@ -28,6 +28,14 @@ const postSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    bookmarkedBy: {
+      type: Array,
+      default: []
+    },
+    bookmarkCount: {
+      type: String,
+      default: 0
+    }
   },
   { timestamps: true }
 );

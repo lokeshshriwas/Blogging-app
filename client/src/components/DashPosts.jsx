@@ -80,6 +80,7 @@ const DashPosts = () => {
               <Table.HeadCell>Post image</Table.HeadCell>
               <Table.HeadCell>Post title</Table.HeadCell>
               <Table.HeadCell>Category</Table.HeadCell>
+              <Table.HeadCell>Bookmarked By</Table.HeadCell>
               <Table.HeadCell>Edit</Table.HeadCell>
               <Table.HeadCell>Delete</Table.HeadCell>
             </Table.Head>
@@ -107,7 +108,10 @@ const DashPosts = () => {
                     </Link>
                   </Table.Cell>
                   <Table.Cell>
-                    <Link>{post.category}</Link>
+                    <Link to={`/search?category=${post.category}`}>{post.category}</Link>
+                  </Table.Cell>
+                  <Table.Cell>
+                    {post.bookmarkCount} users
                   </Table.Cell>
                   <Table.Cell>
                     <Link

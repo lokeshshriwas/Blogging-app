@@ -103,3 +103,48 @@ export const updatepost = async (req, res, next) => {
     next(error);
   }
 };
+
+export const bookmarkPost = async (req, res, next) => {
+  try {
+    const post = await Post.findById(req.params.postId);
+    if (!post) {
+      return next(errorHandler(404, "Post not found"));
+    }
+    const userIndex = post.bookmarkedBy.indexOf(req.user.id);
+    if (userIndex === -1) {
+      post.bookmarkCount += 1;
+      post.bookmarkedBy.push(req.user.id);
+    } else {
+      post.bookmarkCount -= 1;
+      post.bookmarkedBy.splice(userIndex, 1);
+    }
+
+    await post.save();
+    res.status(200).json(post);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const myBookmarks = async (req, res, next) => {
+  if (!req.user) {
+    next(errorHandler(404, "You are not a member"));
+    return;
+  }
+
+  const userId = req.user.id;
+  const pipeline = [
+    {
+      $match: {
+        bookmarkedBy: { $in: [userId] },
+      },
+    },
+  ];
+
+  const bookmarkedPosts = await Post.aggregate(pipeline);
+  if (bookmarkedPosts.length > 0) {
+    res.status(200).json(bookmarkedPosts);
+  } else {
+    res.status(404).json("Not yet bookmarked any article");
+  }
+};

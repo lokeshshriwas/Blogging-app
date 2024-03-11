@@ -80,7 +80,9 @@ const CommentSection = ({ postId }) => {
           )
         );
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error.message)
+    }
   };
 
   const handleEdit = async (comment, editedContent) => {

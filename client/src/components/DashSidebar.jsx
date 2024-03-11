@@ -9,6 +9,7 @@ import { HiMiniUserGroup } from "react-icons/hi2";
 import { HiUser } from "react-icons/hi2";
 import { FaCommentDots } from "react-icons/fa";
 import { FaChartPie } from "react-icons/fa";
+import { IoMdBookmarks } from "react-icons/io";
 
 const DashSidebar = () => {
   const location = useLocation();
@@ -64,6 +65,16 @@ const DashSidebar = () => {
               as="div"
             >
               Profile
+            </Sidebar.Item>
+          </Link>
+          <Link to={`/dashboard?tab=bookmarks`}>
+            <Sidebar.Item
+              active={tab === "bookmarks"}
+              icon={IoMdBookmarks}
+              labelColor={"dark"}
+              as="div"
+            >
+              Bookmarks
             </Sidebar.Item>
           </Link>
           {currentUser.isAdmin && (
