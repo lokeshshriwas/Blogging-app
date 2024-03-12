@@ -61,7 +61,7 @@ const PostCard = ({ post }) => {
           {updatedPost.category}
         </Badge>
         <div className="flex items-center gap-4 px-2" onClick={()=>handleBookmark(updatedPost._id)}>
-          {updatedPost && updatedPost.bookmarkedBy.includes(currentUser._id) ? (
+          {currentUser && updatedPost && updatedPost.bookmarkedBy.includes(currentUser._id) ? (
             <FaBookmark />
           ) : (
             <FaRegBookmark />
